@@ -17,12 +17,14 @@ import { Button } from "../ui/button";
 import { FormError } from "./form-error";
 import { FormSuccess } from "./form-success";
 import { login } from "@/actions/login";
-import { startTransition, useState, useTransition } from "react";
+import { startTransition, use, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+
 export const LoginForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
-
+  const router = useRouter();
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: { email: "", password: "" },
@@ -37,7 +39,17 @@ export const LoginForm = () => {
         setSuccess(data.success);
       });
     });
+    setTimeout(() => {
+      if (success) {
+        router.push("/home");
+      }
+    }, 1000);
+    setTimeout(() => {
+      setError("");
+      setSuccess("");
+    }, 2000);
   };
+
   return (
     <CardWrapper
       headerLabel="Welcome back"
