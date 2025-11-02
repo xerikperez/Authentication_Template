@@ -3,7 +3,11 @@ import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db";
 import { LoginSchema } from "@/schemas";
-import { compare } from "bcryptjs";
+const verifyPassword = async (password: string, hash: string) => {
+  const { compare } = await import("bcryptjs");
+
+  return compare(password, hash);
+};
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(db),
@@ -34,7 +38,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        const isValid = await compare(password, user.password);
+        const isValid = await verifyPassword(password, user.password);
 
         if (!isValid) {
           return null;
