@@ -21,12 +21,36 @@ import { FormError } from "@/components/auth/form-error";
 import { FormSuccess } from "@/components/auth/form-success";
 
 const fieldConfig = [
-  { name: "name", label: "Meal name", placeholder: "Chicken bowl" },
-  { name: "quantity", label: "Quantity", placeholder: "1 serving" },
-  { name: "calories", label: "Calories", placeholder: "550" },
-  { name: "protein", label: "Protein (g)", placeholder: "45" },
-  { name: "carbs", label: "Carbs (g)", placeholder: "60" },
-  { name: "fat", label: "Fat (g)", placeholder: "18" },
+  { name: "name", label: "Meal name", placeholder: "Chicken bowl", type: "text" },
+  { name: "quantity", label: "Quantity", placeholder: "1 serving", type: "text" },
+  {
+    name: "calories",
+    label: "Calories",
+    placeholder: "550",
+    type: "number",
+    step: 1,
+  },
+  {
+    name: "protein",
+    label: "Protein (g)",
+    placeholder: "45",
+    type: "number",
+    step: 0.1,
+  },
+  {
+    name: "carbs",
+    label: "Carbs (g)",
+    placeholder: "60",
+    type: "number",
+    step: 0.1,
+  },
+  {
+    name: "fat",
+    label: "Fat (g)",
+    placeholder: "18",
+    type: "number",
+    step: 0.1,
+  },
 ] as const;
 
 type FoodEntryFormValues = z.input<typeof FoodEntrySchema>;
@@ -89,14 +113,13 @@ export const MealForm = () => {
                   <FormLabel className="text-slate-200">{field.label}</FormLabel>
                   <FormControl>
                     <Input
+                      type={field.type}
                       placeholder={field.placeholder}
                       {...controller}
                       disabled={isPending}
-                      inputMode={
-                        field.name === "name" || field.name === "quantity"
-                          ? "text"
-                          : "decimal"
-                      }
+                      inputMode={field.type === "number" ? "decimal" : "text"}
+                      min={field.type === "number" ? 0 : undefined}
+                      step={field.type === "number" ? field.step ?? "any" : undefined}
                     />
                   </FormControl>
                   <FormMessage />
