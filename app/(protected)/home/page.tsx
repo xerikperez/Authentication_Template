@@ -1,12 +1,7 @@
-import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
-const HomePage = async () => {
-  const session = await auth();
-  return (
-    <div>
-      <h1>Welcome to the Home Page</h1>
-      <p>This is the main content of the home page.</p>
-    </div>
-  );
+const HomePage = () => {
+  redirect("/dashboard");
 };
+
 export default HomePage;

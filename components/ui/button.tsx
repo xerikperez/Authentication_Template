@@ -46,8 +46,6 @@ function Button({
     asChild?: boolean;
   }) {
   const Comp = asChild ? Slot : "button";
-  console.log("variant:", variant);
-  console.log("computed className:", buttonVariants({ variant, size }));
 
   return (
     <Comp
