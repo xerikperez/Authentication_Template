@@ -17,7 +17,7 @@ import { Button } from "../ui/button";
 import { FormError } from "./form-error";
 import { FormSuccess } from "./form-success";
 import { login } from "@/actions/login";
-import { startTransition, use, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 export const LoginForm = () => {
@@ -33,21 +33,18 @@ export const LoginForm = () => {
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     setError("");
     setSuccess("");
-    startTransition(() => {
-      login(values).then((data) => {
-        setError(data.error);
-        setSuccess(data.success);
-      });
-    });
-    setTimeout(() => {
-      if (success) {
-        router.push("/home");
+    startTransition(async () => {
+      const result = await login(values);
+
+      if (result?.error) {
+        setError(result.error);
+        return;
       }
-    }, 1000);
-    setTimeout(() => {
-      setError("");
-      setSuccess("");
-    }, 2000);
+
+      setSuccess(result?.success ?? "Logged in successfully.");
+      router.push("/dashboard");
+      router.refresh();
+    });
   };
 
   return (
@@ -104,8 +101,9 @@ export const LoginForm = () => {
           <Button
             type="submit"
             className="flex items-center justify-center w-40 gap-y-4"
+            disabled={isPending}
           >
-            Login
+            {isPending ? "Signing in..." : "Login"}
           </Button>
         </form>
       </Form>

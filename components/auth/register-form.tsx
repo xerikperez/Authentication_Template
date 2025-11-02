@@ -17,7 +17,7 @@ import { Button } from "../ui/button";
 import { FormError } from "./form-error";
 import { FormSuccess } from "./form-success";
 import { Register } from "@/actions/register";
-import { startTransition, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 
 export const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -110,8 +110,9 @@ export const RegisterForm = () => {
           <Button
             type="submit"
             className="flex items-center justify-center w-40 gap-y-4"
+            disabled={isPending}
           >
-            Register
+            {isPending ? "Creating..." : "Register"}
           </Button>
         </form>
       </Form>
