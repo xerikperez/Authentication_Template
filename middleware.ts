@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
-import { auth } from "./auth";
+import type { NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 const publicRoutes = ["/", "/auth/login", "/auth/register"] as const;
 
-export default auth((req) => {
+export async function middleware(req: NextRequest) {
   const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
+  const token = await getToken({ req, raw: false });
+  const isLoggedIn = !!token;
   const isPublicRoute = publicRoutes.some((route) =>
     nextUrl.pathname === route || nextUrl.pathname.startsWith(`${route}/`)
   );
@@ -21,7 +23,7 @@ export default auth((req) => {
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: [
